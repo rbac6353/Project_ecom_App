@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; color: #333; }
+        .container { padding: 20px; border: 1px solid #eee; border-radius: 5px; max-width: 600px; margin: 0 auto; }
+        .header { background-color: #FF5722; color: white; padding: 15px; text-align: center; border-radius: 5px 5px 0 0; }
+        .content { padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border-bottom: 1px solid #ddd; padding: 8px; text-align: left; }
+        .total { text-align: right; font-size: 18px; font-weight: bold; margin-top: 15px; color: #FF5722; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ยืนยันคำสั่งซื้อ</h1>
+        </div>
+        <div class="content">
+            <p>สวัสดีคุณ <b><%= typeof name !== 'undefined' ? name : 'ลูกค้า' %></b>,</p>
+            <p>ขอบคุณที่สั่งซื้อสินค้ากับ GTXShop คำสั่งซื้อของคุณได้รับการยืนยันแล้ว</p>
+            
+            <p><b>หมายเลขคำสั่งซื้อ:</b> #<%= typeof orderId !== 'undefined' ? orderId : 'N/A' %></p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>สินค้า</th>
+                        <th>จำนวน</th>
+                        <th>ราคา</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (typeof items !== 'undefined' && Array.isArray(items)) { %>
+                        <% items.forEach(function(item) { %>
+                        <tr>
+                            <td><%= item.productName || 'Unknown Product' %></td>
+                            <td>x<%= item.quantity || 0 %></td>
+                            <td>฿<%= item.price || '0.00' %></td>
+                        </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="3">ไม่มีรายการสินค้า</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+
+            <div class="total">
+                ราคารวมทั้งสิ้น: ฿<%= typeof total !== 'undefined' ? total : '0.00' %>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <% if (typeof orderId !== 'undefined') { %>
+                <a href="gtxshop://order/<%= orderId %>" 
+                   style="background-color: #FF5722; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
+                   ดูรายละเอียดคำสั่งซื้อในแอป
+                </a>
+                <% } %>
+            </div>
+            
+            <p style="margin-top: 30px; font-size: 12px; color: #999;">
+                หากปุ่มใช้งานไม่ได้ ให้เปิดแอป GTXShop แล้วไปที่เมนู "ประวัติการสั่งซื้อ"
+            </p>
+            
+            <p style="margin-top: 10px; font-size: 12px; color: #999;">
+                หากมีข้อสงสัย กรุณาติดต่อเราที่ support@gtxshop.com
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+

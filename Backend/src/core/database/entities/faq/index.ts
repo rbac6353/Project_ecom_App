@@ -1,0 +1,2 @@
+export * from './faq.entity';
+

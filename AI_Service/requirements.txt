@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+python-multipart
+requests
+pillow
+numpy
+scikit-learn
+mysql-connector-python
+sentence-transformers
+python-dotenv
+

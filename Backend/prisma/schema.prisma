@@ -1,0 +1,670 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// ==================== ADMIN ====================
+
+model admin_log {
+  id         Int      @id @default(autoincrement())
+  adminId    Int
+  action     String
+  targetType String
+  targetId   Int
+  details    String?  @db.Text
+  createdAt  DateTime @default(now())
+  admin      user     @relation(fields: [adminId], references: [id])
+
+  @@index([adminId])
+}
+
+// ==================== BANNER ====================
+
+model banner {
+  id        Int      @id @default(autoincrement())
+  title     String?
+  image     String   @db.Text
+  link      String?
+  position  String   @default("main")
+  order     Int      @default(0)
+  status    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==================== CART ====================
+
+model cart {
+  id            Int             @id @default(autoincrement())
+  cartTotal     Float
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  orderedById   Int
+  user          user            @relation(fields: [orderedById], references: [id])
+  productoncart productoncart[]
+
+  @@index([orderedById])
+}
+
+// ==================== CATEGORY ====================
+
+model category {
+  id          Int           @id @default(autoincrement())
+  name        String
+  image       String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  product     product[]
+  subcategory subcategory[]
+}
+
+model subcategory {
+  id           Int       @id @default(autoincrement())
+  name         String
+  iconType     String    @default("emoji")
+  iconEmoji    String?
+  iconImageUrl String?   @db.Text
+  iconIonicon  String?
+  categoryId   Int
+  storeId      Int?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  category     category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  store        store?    @relation(fields: [storeId], references: [id])
+  product      product[]
+
+  @@index([categoryId])
+  @@index([storeId])
+}
+
+// ==================== CHAT ====================
+
+model chat_message {
+  id        Int      @id @default(autoincrement())
+  roomId    String
+  senderId  Int
+  message   String   @db.Text
+  type      String   @default("text")
+  imageUrl  String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sender    user     @relation(fields: [senderId], references: [id])
+
+  @@index([roomId])
+  @@index([senderId])
+}
+
+// ==================== COUPON ====================
+
+model coupon {
+  id              Int           @id @default(autoincrement())
+  code            String        @unique
+  discountAmount  Float
+  discountPercent Float?
+  minPurchase     Float?
+  maxDiscount     Float?
+  isUsed          Boolean       @default(false)
+  usedAt          DateTime?
+  expiresAt       DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  userId          Int
+  user            user          @relation(fields: [userId], references: [id])
+  order           order[]
+  user_coupon     user_coupon[]
+
+  @@index([code])
+  @@index([userId])
+}
+
+// ==================== FAQ ====================
+
+model faq {
+  id        Int      @id @default(autoincrement())
+  question  String
+  answer    String   @db.Text
+  category  String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==================== FLASH SALE ====================
+
+model flash_sale {
+  id          Int               @id @default(autoincrement())
+  name        String
+  startTime   DateTime
+  endTime     DateTime
+  isActive    Boolean           @default(true)
+  description String?           @db.Text
+  createdAt   DateTime          @default(now())
+  items       flash_sale_item[]
+}
+
+model flash_sale_item {
+  id            Int        @id @default(autoincrement())
+  flashSaleId   Int
+  productId     Int
+  discountPrice Decimal    @db.Decimal(10, 2)
+  limitStock    Int
+  sold          Int        @default(0)
+  createdAt     DateTime   @default(now())
+  flashSale     flash_sale @relation(fields: [flashSaleId], references: [id], onDelete: Cascade)
+  product       product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([flashSaleId])
+  @@index([productId])
+}
+
+// ==================== IMAGE ====================
+
+model image {
+  id         Int      @id @default(autoincrement())
+  asset_id   String
+  public_id  String
+  secure_url String
+  url        String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  productId  Int
+  product    product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+// ==================== NOTIFICATION ====================
+
+model notification {
+  id         Int      @id @default(autoincrement())
+  type       String
+  title      String
+  message    String   @db.Text
+  isRead     Boolean  @default(false)
+  userId     Int?
+  targetRole String?
+  orderId    Int?
+  paymentId  Int?
+  productId  Int?
+  storeId    Int?
+  data       String?  @db.Text
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  order      order?   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  payment    payment? @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([paymentId])
+  @@index([productId])
+  @@index([storeId])
+  @@index([targetRole])
+  @@index([type])
+  @@index([userId])
+}
+
+model notification_setting {
+  id          Int     @id @default(autoincrement())
+  userId      Int     @unique
+  orderUpdate Boolean @default(true)
+  promotion   Boolean @default(true)
+  chat        Boolean @default(true)
+  user        user    @relation(fields: [userId], references: [id])
+}
+
+// ==================== ORDER ====================
+
+model order {
+  id               Int               @id @default(autoincrement())
+  cartTotal        Float
+  discountAmount   Float             @default(0)
+  discountCode     String?
+  oderStatus       String            @default("Not Process")
+  shippingAddress  String?
+  shippingPhone    String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  orderedById      Int
+  couponId         Int?
+  notification     notification[]
+  coupon           coupon?           @relation(fields: [couponId], references: [id])
+  user             user              @relation(fields: [orderedById], references: [id])
+  payment          payment[]
+  productonorder   productonorder[]
+  order_returns    order_returns[]
+  shipment         shipment?
+  tracking_history tracking_history[]
+
+  @@index([couponId])
+  @@index([orderedById])
+}
+
+model order_returns {
+  id                 Int                  @id @default(autoincrement())
+  orderId            Int
+  userId             Int
+  status             String               @default("REQUESTED")
+  reasonCode         String?              @db.VarChar(100)
+  reasonText         String?              @db.Text
+  images             String?              @db.Text
+  refundAmount       Decimal?             @db.Decimal(10, 2)
+  adminNote          String?              @db.Text
+  resolvedAt         DateTime?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  order              order                @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user               user                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order_return_items order_return_items[]
+
+  @@index([orderId])
+  @@index([userId])
+}
+
+model order_return_items {
+  id            Int           @id @default(autoincrement())
+  orderReturnId Int
+  orderItemId   Int
+  quantity      Int
+  unitPrice     Decimal       @db.Decimal(10, 2)
+  orderReturn   order_returns @relation(fields: [orderReturnId], references: [id], onDelete: Cascade)
+  orderItem     productonorder @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+
+  @@index([orderReturnId])
+  @@index([orderItemId])
+}
+
+// ==================== PAYMENT ====================
+
+model payment {
+  id              Int            @id @default(autoincrement())
+  amount          Float
+  currency        String         @default("THB")
+  method          String
+  status          String         @default("pending")
+  customerEmail   String?
+  customerName    String?
+  customerPhone   String?
+  transactionId   String         @unique
+  gatewayId       String?
+  gatewayStatus   String?
+  metadata        String?
+  qrCodeData      String?
+  paymentSlipUrl  String?
+  approvedBy      Int?
+  approvedAt      DateTime?
+  rejectedBy      Int?
+  rejectedAt      DateTime?
+  rejectionReason String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  orderId         Int
+  notification    notification[]
+  order           order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+// ==================== PRODUCT ====================
+
+model product {
+  id                Int               @id @default(autoincrement())
+  title             String
+  description       String?           @db.Text
+  price             Float
+  discountPrice     Float?
+  discountStartDate DateTime?
+  discountEndDate   DateTime?
+  sold              Int               @default(0)
+  quantity          Int
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  categoryId        Int
+  subcategoryId     Int?
+  storeId           Int?
+  image             image[]
+  category          category          @relation(fields: [categoryId], references: [id])
+  subcategory       subcategory?      @relation(fields: [subcategoryId], references: [id])
+  store             store?            @relation(fields: [storeId], references: [id])
+  productoncart     productoncart[]
+  productonorder    productonorder[]
+  review            review[]
+  product_variant   product_variant[]
+  recently_viewed   recently_viewed[]
+  flash_sale_item   flash_sale_item[]
+  wishlist          wishlist[]
+
+  @@index([categoryId])
+  @@index([subcategoryId])
+  @@index([storeId])
+}
+
+model product_variant {
+  id         Int     @id @default(autoincrement())
+  productId  Int
+  name       String
+  sku        String? @db.VarChar(64)
+  price      Decimal? @db.Decimal(10, 2)
+  stock      Int
+  imageIndex Int?
+  attributes Json?
+  product    product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([sku])
+}
+
+model recently_viewed {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
+  viewedAt  DateTime @default(now()) @updatedAt
+  user      user     @relation(fields: [userId], references: [id])
+  product   product  @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@index([productId])
+}
+
+model productoncart {
+  id               Int     @id @default(autoincrement())
+  cartId           Int
+  productId        Int
+  count            Int
+  price            Float
+  selectedVariants String? @db.Text
+  cart             cart    @relation(fields: [cartId], references: [id])
+  product          product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([cartId])
+  @@index([productId])
+}
+
+model productonorder {
+  id                 Int                  @id @default(autoincrement())
+  productId          Int
+  orderId            Int
+  count              Int
+  price              Float
+  selectedVariants   String?              @db.Text
+  order              order                @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product            product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  review             review[]
+  order_return_items order_return_items[]
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+// ==================== REVIEW ====================
+
+model review {
+  id             Int             @id @default(autoincrement())
+  rating         Int
+  comment        String?
+  images         String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  userId         Int
+  productId      Int
+  storeId        Int?
+  orderItemId    Int
+  productonorder productonorder  @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  product        product         @relation(fields: [productId], references: [id])
+  store          store?          @relation(fields: [storeId], references: [id])
+  user           user            @relation(fields: [userId], references: [id])
+  review_report  review_report[]
+
+  @@index([orderItemId])
+  @@index([productId])
+  @@index([storeId])
+  @@index([userId])
+}
+
+model review_report {
+  id         Int      @id @default(autoincrement())
+  reviewId   Int
+  reporterId Int
+  reason     String   @db.Text
+  status     String   @default("PENDING")
+  createdAt  DateTime @default(now())
+  review     review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reporter   user     @relation(fields: [reporterId], references: [id])
+
+  @@index([reviewId])
+  @@index([reporterId])
+}
+
+// ==================== SHIPMENT ====================
+
+model shipment {
+  id             Int       @id @default(autoincrement())
+  orderId        Int       @unique
+  courierId      Int?
+  status         String    @default("WAITING_PICKUP")
+  codAmount      Decimal   @default(0) @db.Decimal(10, 2)
+  isCodPaid      Boolean   @default(false)
+  proofImage     String?
+  signatureImage String?
+  latitude       Decimal?  @db.Decimal(10, 6)
+  longitude      Decimal?  @db.Decimal(10, 6)
+  failedReason   String?
+  pickupTime     DateTime?
+  deliveredTime  DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  order          order     @relation(fields: [orderId], references: [id])
+  courier        user?     @relation(fields: [courierId], references: [id])
+
+  @@index([courierId])
+}
+
+model tracking_history {
+  id          Int      @id @default(autoincrement())
+  orderId     Int
+  status      String
+  title       String
+  description String?
+  location    String?
+  createdAt   DateTime @default(now())
+  order       order    @relation(fields: [orderId], references: [id])
+
+  @@index([orderId])
+}
+
+// ==================== SITE SETTINGS ====================
+
+model sitesetting {
+  id                    Int      @id @default(autoincrement())
+  siteName              String   @default("Boxify")
+  description           String?
+  contactEmail          String?
+  contactPhone          String?
+  address               String?  @db.Text
+  shippingFee           Float    @default(50)
+  freeShippingThreshold Float    @default(1000)
+  facebook              String?
+  line                  String?
+  maintenanceMode       Boolean  @default(false)
+  updatedAt             DateTime @updatedAt
+}
+
+// ==================== STORE ====================
+
+model store {
+  id                        Int                         @id @default(autoincrement())
+  name                      String
+  description               String?
+  logo                      String?
+  idCard                    String?
+  address                   String?
+  status                    String                      @default("pending")
+  ownerId                   Int
+  createdAt                 DateTime                    @default(now())
+  updatedAt                 DateTime                    @updatedAt
+  product                   product[]
+  review                    review[]
+  user                      user                        @relation(fields: [ownerId], references: [id])
+  subcategory               subcategory[]
+  store_follower            store_follower[]
+  store_wallet              store_wallet?
+  store_withdrawal_request  store_withdrawal_request[]
+
+  @@index([ownerId])
+}
+
+model store_follower {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  storeId   Int
+  createdAt DateTime @default(now())
+  user      user     @relation(fields: [userId], references: [id])
+  store     store    @relation(fields: [storeId], references: [id])
+
+  @@unique([userId, storeId])
+  @@index([userId])
+  @@index([storeId])
+}
+
+// ==================== STORE WALLET ====================
+
+model store_wallet {
+  id                       Int                        @id @default(autoincrement())
+  balance                  Decimal                    @default(0) @db.Decimal(10, 2)
+  storeId                  Int                        @unique
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime                   @updatedAt
+  store                    store                      @relation(fields: [storeId], references: [id])
+  store_wallet_transaction store_wallet_transaction[]
+  store_withdrawal_request store_withdrawal_request[]
+}
+
+model store_wallet_transaction {
+  id          Int          @id @default(autoincrement())
+  walletId    Int
+  amount      Decimal      @db.Decimal(10, 2)
+  type        String
+  referenceId String?
+  description String?
+  createdAt   DateTime     @default(now())
+  wallet      store_wallet @relation(fields: [walletId], references: [id])
+
+  @@index([walletId])
+}
+
+model store_withdrawal_request {
+  id            Int          @id @default(autoincrement())
+  storeId       Int
+  walletId      Int
+  amount        Decimal      @db.Decimal(10, 2)
+  status        String       @default("PENDING")
+  bankName      String?
+  accountNumber String?
+  accountName   String?
+  proofImage    String?
+  adminNote     String?      @db.Text
+  processedBy   Int?
+  processedAt   DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  store         store        @relation(fields: [storeId], references: [id])
+  wallet        store_wallet @relation(fields: [walletId], references: [id])
+
+  @@index([storeId])
+  @@index([walletId])
+}
+
+// ==================== USER ====================
+
+model user {
+  id                   Int                   @id @default(autoincrement())
+  email                String                @unique
+  password             String?
+  name                 String?
+  picture              String?
+  role                 String                @default("user")
+  enabled              Boolean               @default(true)
+  address              String?
+  phone                String?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  cart                 cart[]
+  coupon               coupon[]
+  order                order[]
+  review               review[]
+  store                store[]
+  admin_log            admin_log[]
+  chat_message         chat_message[]
+  notification_setting notification_setting?
+  order_returns        order_returns[]
+  recently_viewed      recently_viewed[]
+  review_report        review_report[]
+  shipment             shipment[]
+  store_follower       store_follower[]
+  user_coupon          user_coupon[]
+  wallet               wallet?
+  wishlist             wishlist[]
+}
+
+model user_coupon {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  couponId      Int
+  isUsed        Boolean   @default(false)
+  usedAt        DateTime?
+  usedInOrderId Int?
+  collectedAt   DateTime  @default(now())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  user          user      @relation(fields: [userId], references: [id])
+  coupon        coupon    @relation(fields: [couponId], references: [id])
+
+  @@index([userId])
+  @@index([couponId])
+}
+
+// ==================== WALLET ====================
+
+model wallet {
+  id                 Int                  @id @default(autoincrement())
+  userId             Int                  @unique
+  balance            Decimal              @default(0) @db.Decimal(10, 2)
+  status             String               @default("ACTIVE")
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  user               user                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  wallet_transaction wallet_transaction[]
+}
+
+model wallet_transaction {
+  id          Int      @id @default(autoincrement())
+  walletId    Int
+  amount      Decimal  @db.Decimal(10, 2)
+  type        String
+  referenceId String?  @db.VarChar(255)
+  description String?  @db.VarChar(255)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  wallet      wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([walletId])
+}
+
+// ==================== WISHLIST ====================
+
+model wishlist {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
+  createdAt DateTime @default(now())
+  user      user     @relation(fields: [userId], references: [id])
+  product   product  @relation(fields: [productId], references: [id])
+
+  @@index([userId])
+  @@index([productId])
+}
+
