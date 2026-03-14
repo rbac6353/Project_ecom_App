@@ -1,0 +1,113 @@
+{
+  "common": {
+    "loading": "กำลังโหลด...",
+    "success": "สำเร็จ",
+    "error": "ผิดพลาด",
+    "cancel": "ยกเลิก",
+    "confirm": "ยืนยัน",
+    "save": "บันทึก",
+    "delete": "ลบ",
+    "edit": "แก้ไข",
+    "add": "เพิ่ม",
+    "search": "ค้นหา",
+    "filter": "ตัวกรอง",
+    "clear": "ล้าง",
+    "apply": "ตกลง"
+  },
+  "tab": {
+    "home": "หน้าแรก",
+    "category": "หมวดหมู่",
+    "search": "ค้นหา",
+    "cart": "รถเข็น",
+    "profile": "ฉัน"
+  },
+  "home": {
+    "flashSale": "FLASH SALE",
+    "recommend": "สินค้าแนะนำประจำวัน",
+    "seeMore": "ดูทั้งหมด",
+    "categories": "หมวดหมู่",
+    "trending": "สินค้าขายดี"
+  },
+  "product": {
+    "addToCart": "เพิ่มไปยังรถเข็น",
+    "buyNow": "ซื้อเลย",
+    "chat": "แชทเลย",
+    "sold": "ขายแล้ว",
+    "reviews": "คะแนนและรีวิว",
+    "description": "รายละเอียดสินค้า",
+    "specifications": "ข้อมูลจำเพาะ",
+    "related": "สินค้าที่เกี่ยวข้อง",
+    "outOfStock": "สินค้าหมด",
+    "inStock": "มีสินค้า",
+    "selectVariant": "กรุณาเลือกตัวเลือกสินค้า"
+  },
+  "cart": {
+    "title": "ตะกร้าสินค้า",
+    "empty": "ตะกร้าของคุณว่างเปล่า",
+    "total": "ยอดรวม",
+    "checkout": "ชำระเงิน",
+    "remove": "ลบ",
+    "selectAll": "เลือกทั้งหมด"
+  },
+  "profile": {
+    "login": "เข้าสู่ระบบ / สมัครสมาชิก",
+    "settings": "ตั้งค่าบัญชี",
+    "myOrders": "รายการคำสั่งซื้อ",
+    "wishlist": "สินค้าที่ถูกใจ",
+    "help": "ศูนย์ช่วยเหลือ",
+    "logout": "ออกจากระบบ",
+    "language": "ภาษา / Language",
+    "editProfile": "แก้ไขโปรไฟล์",
+    "addresses": "ที่อยู่",
+    "following": "ร้านที่ติดตาม",
+    "notifications": "การแจ้งเตือน",
+    "deleteAccount": "ลบบัญชีผู้ใช้",
+    "deleteAccountConfirm": "ยืนยันการลบบัญชี",
+    "deleteAccountWarning": "การกระทำนี้ไม่สามารถย้อนกลับได้ ข้อมูลประวัติการสั่งซื้อและคะแนนสะสมจะถูกลบถาวร",
+    "deleteAccountSuccess": "ลบบัญชีสำเร็จ",
+    "deleteAccountSuccessMessage": "บัญชีของคุณถูกลบแล้ว ขอบคุณที่ใช้บริการ"
+  },
+  "order": {
+    "title": "รายการคำสั่งซื้อ",
+    "status": "สถานะ",
+    "total": "ยอดรวม",
+    "orderDate": "วันที่สั่งซื้อ",
+    "viewDetail": "ดูรายละเอียด",
+    "pending": "รอดำเนินการ",
+    "shipped": "จัดส่งแล้ว",
+    "delivered": "จัดส่งสำเร็จ",
+    "cancelled": "ยกเลิกแล้ว"
+  },
+  "settings": {
+    "title": "ตั้งค่า",
+    "account": "ตั้งค่าบัญชี",
+    "privacy": "ความเป็นส่วนตัว",
+    "about": "เกี่ยวกับ",
+    "version": "เวอร์ชัน"
+  },
+  "auth": {
+    "login": "เข้าสู่ระบบ",
+    "register": "สมัครสมาชิก",
+    "email": "อีเมล",
+    "password": "รหัสผ่าน",
+    "forgotPassword": "ลืมรหัสผ่าน?",
+    "dontHaveAccount": "ยังไม่มีบัญชี?",
+    "alreadyHaveAccount": "มีบัญชีอยู่แล้ว?"
+  },
+  "seller": {
+    "center": "ศูนย์ผู้ขาย",
+    "orders": "จัดการออเดอร์",
+    "products": "สินค้าของฉัน",
+    "addProduct": "เพิ่มสินค้า",
+    "coupons": "คูปอง",
+    "stats": "สถิติ"
+  },
+  "admin": {
+    "dashboard": "แดชบอร์ดแอดมิน",
+    "users": "จัดการผู้ใช้",
+    "stores": "จัดการร้านค้า",
+    "categories": "จัดการหมวดหมู่",
+    "reports": "คำร้องเรียนรีวิว"
+  }
+}
+
