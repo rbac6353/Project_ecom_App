@@ -68,10 +68,10 @@ async function bootstrap() {
     prefix: '/uploads/',
   });
 
-  // Get port from config
-  const port = configService.get<number>('app.port') || 3000;
-  await app.listen(port);
-  console.log(`🚀 NestJS application is running on: http://localhost:${port}`);
+  // พอร์ตจาก Render (process.env.PORT) หรือ config / 3000 — รับแขกที่ 0.0.0.0 เพื่อให้ Cloud ผ่าน
+  const port = parseInt(process.env.PORT || '0', 10) || configService.get<number>('app.port') || 3000;
+  await app.listen(port, '0.0.0.0');
+  console.log(`🚀 NestJS application is running on port ${port}`);
   console.log(`📸 Visual Search endpoint: POST http://localhost:${port}/products/visual-search`);
   console.log(`📁 Static files available at: http://localhost:${port}/uploads/`);
 }
