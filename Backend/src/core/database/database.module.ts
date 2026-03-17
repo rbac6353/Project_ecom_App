@@ -38,6 +38,10 @@ class CamelCaseNamingStrategy extends DefaultNamingStrategy {
           synchronize: configService.get<boolean>('DB_SYNCHRONIZE', true),
           logging: false,
           namingStrategy: new CamelCaseNamingStrategy(), // ใช้ custom naming strategy
+          // TiDB Serverless บังคับเชื่อมต่อแบบ SSL
+          ssl: {
+            rejectUnauthorized: true,
+          },
         };
       },
     }),
