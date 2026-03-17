@@ -1,0 +1,57 @@
+{
+  "expo": {
+    "name": "BoxiFY",
+    "slug": "boxify",
+    "owner": "p0925596581",
+    "scheme": "boxify",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./src/assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FF6B35"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.boxify.app",
+      "infoPlist": {
+        "UIStatusBarStyle": "UIStatusBarStyleLightContent",
+        "UIViewControllerBasedStatusBarAppearance": false
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/adaptive-icon.png",
+        "backgroundColor": "#FF6B35"
+      },
+      "package": "com.boxify.app",
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "statusBar": {
+        "backgroundColor": "#FF6B35",
+        "barStyle": "light-content"
+      }
+    },
+    "web": {
+      "favicon": "./src/assets/favicon.png"
+    },
+    "assetBundlePatterns": ["src/assets/**/*"],
+    "plugins": [
+      "expo-camera",
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.boxify.app",
+          "enableGooglePay": false
+        }
+      ],
+      "expo-web-browser",
+      "expo-font",
+      "expo-video",
+      "expo-asset"
+    ]
+  }
+}
