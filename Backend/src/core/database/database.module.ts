@@ -35,7 +35,7 @@ class CamelCaseNamingStrategy extends DefaultNamingStrategy {
           password: configService.get<string>('DB_PASSWORD'),
           database: configService.get<string>('DB_DATABASE'),
           entities: entityClasses,
-          synchronize: configService.get<boolean>('DB_SYNCHRONIZE', true),
+          synchronize: configService.get<boolean>('DB_SYNCHRONIZE', false), // false สำหรับ Production/Render — เปิดเฉพาะตอน dev ด้วย DB_SYNCHRONIZE=true
           logging: false,
           namingStrategy: new CamelCaseNamingStrategy(), // ใช้ custom naming strategy
           // TiDB Serverless บังคับเชื่อมต่อแบบ SSL
