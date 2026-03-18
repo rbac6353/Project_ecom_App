@@ -39,20 +39,35 @@ async function bootstrap() {
 
   // Enable CORS for React Native (ปรับให้ปลอดภัยขึ้น)
   const configService = app.get(ConfigService);
+  const nodeEnv = configService.get<string>('app.nodeEnv') || 'development';
   // Whitelist ต้นทางที่อนุญาต (กัน CORS error ตอนเว็บอยู่บน Vercel)
   const allowedOriginsFromConfig =
     configService.get<string[]>('app.allowedOrigins') || ['http://localhost:8081'];
 
-  const vercelOrigin = 'https://project-ecom-app.vercel.app';
   const allowedOrigins = Array.from(
-    new Set([...allowedOriginsFromConfig, vercelOrigin]),
+    new Set([
+      ...allowedOriginsFromConfig,
+      // Production domain
+      'https://project-ecom-app.vercel.app',
+      // Dev (ถ้าใช้งานผ่านเครื่อง)
+      'http://localhost:3000',
+    ]),
   );
-  const nodeEnv = configService.get<string>('app.nodeEnv') || 'development';
+
+  // Preview deployment ของ Vercel จะมี pattern แบบ:
+  // project-ecom-351l5jydy-65016353-9070s-projects.vercel.app
+  // ให้รองรับ "ทุก preview" ของ project นี้
+  const vercelPreviewSuffix = '-65016353-9070s-projects.vercel.app';
   
   app.enableCors({
-    origin: nodeEnv === 'production' 
-      ? allowedOrigins // ใน Production ใช้ whitelist
-      : true, // ใน Development อนุญาตทั้งหมด (เพื่อความสะดวกในการพัฒนา)
+    origin:
+      nodeEnv === 'production'
+        ? (origin: string | undefined, callback: (err: any, allow?: boolean) => void) => {
+            const isVercelPreview = !!origin && origin.endsWith(vercelPreviewSuffix);
+            const isAllowed = !origin || allowedOrigins.includes(origin) || isVercelPreview;
+            callback(null, isAllowed);
+          }
+        : true,
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
