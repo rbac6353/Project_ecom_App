@@ -174,11 +174,9 @@ export default function HomeScreen() {
   useFocusEffect(
     useCallback(() => {
       fetchCategories();
-      // ถ้ายังไม่ได้เลือกหมวดหมู่ และยังไม่มีสินค้า ให้ดึงสินค้า Just for you
-      if (selectedCategoryId === null && recommendedProducts.length === 0) {
-        fetchData(null, 1, false);
-      }
-    }, [fetchCategories, selectedCategoryId, recommendedProducts.length, fetchData])
+      // หมายเหตุ: อย่าใส่ deps ที่เปลี่ยนบ่อย (เช่น recommendedProducts.length)
+      // เพราะ useFocusEffect จะรันซ้ำขณะหน้าโฟกัส ทำให้ยิง /categories รัวๆ ได้ (โดยเฉพาะบน web/strict mode)
+    }, [fetchCategories])
   );
 
   // Render product item
