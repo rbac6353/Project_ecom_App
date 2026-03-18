@@ -365,11 +365,18 @@ export default function ProfileScreen({ navigation: navProp }: any) {
   // 5. ถ้า Login แล้ว
   if (token && user) {
     return (
-      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
+      <SafeAreaView
+        style={[
+          styles.container,
+          // RN Web บางกรณี ScrollView จะไม่ scroll ถ้าคอนเทนเนอร์ไม่ถูกกำหนดความสูง
+          { backgroundColor: colors.background, height: '100vh' },
+        ]}
+        edges={['top']}
+      >
         <ScrollView
-          style={styles.scrollView}
+          style={[styles.scrollView, { height: '100%' }]}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 90 }}
+          contentContainerStyle={{ paddingBottom: 90, minHeight: '100%' }}
         >
           <ProfileHeader navigation={navProp} />
 
