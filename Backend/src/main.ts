@@ -39,7 +39,14 @@ async function bootstrap() {
 
   // Enable CORS for React Native (ปรับให้ปลอดภัยขึ้น)
   const configService = app.get(ConfigService);
-  const allowedOrigins = configService.get<string[]>('app.allowedOrigins') || ['http://localhost:8081'];
+  // Whitelist ต้นทางที่อนุญาต (กัน CORS error ตอนเว็บอยู่บน Vercel)
+  const allowedOriginsFromConfig =
+    configService.get<string[]>('app.allowedOrigins') || ['http://localhost:8081'];
+
+  const vercelOrigin = 'https://project-ecom-app.vercel.app';
+  const allowedOrigins = Array.from(
+    new Set([...allowedOriginsFromConfig, vercelOrigin]),
+  );
   const nodeEnv = configService.get<string>('app.nodeEnv') || 'development';
   
   app.enableCors({
