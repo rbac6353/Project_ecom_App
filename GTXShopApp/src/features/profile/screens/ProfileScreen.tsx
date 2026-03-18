@@ -370,7 +370,7 @@ export default function ProfileScreen({ navigation: navProp }: any) {
           styles.container,
           { backgroundColor: colors.background },
           // RN Web มักไม่ยอมให้ ScrollView ทำงาน ถ้า height ไม่ถูก constrain
-          Platform.OS === 'web' && { height: '100%' },
+          Platform.OS === 'web' && { height: '100vh' as any },
         ]}
         edges={['top']}
       >
