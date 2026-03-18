@@ -368,15 +368,15 @@ export default function ProfileScreen({ navigation: navProp }: any) {
       <SafeAreaView
         style={[
           styles.container,
-          // RN Web บางกรณี ScrollView จะไม่ scroll ถ้าคอนเทนเนอร์ไม่ถูกกำหนดความสูง
-          { backgroundColor: colors.background, height: '100vh' },
+          { backgroundColor: colors.background },
         ]}
         edges={['top']}
       >
         <ScrollView
-          style={[styles.scrollView, { height: '100%' }]}
+          style={[styles.scrollView]}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 90, minHeight: '100%' }}
+          scrollEnabled={true}
+          contentContainerStyle={{ paddingBottom: 90, flexGrow: 1 }}
         >
           <ProfileHeader navigation={navProp} />
 
