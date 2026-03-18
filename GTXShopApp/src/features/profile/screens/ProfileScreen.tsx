@@ -369,6 +369,8 @@ export default function ProfileScreen({ navigation: navProp }: any) {
         style={[
           styles.container,
           { backgroundColor: colors.background },
+          // RN Web มักไม่ยอมให้ ScrollView ทำงาน ถ้า height ไม่ถูก constrain
+          Platform.OS === 'web' && { height: '100%' },
         ]}
         edges={['top']}
       >
@@ -376,7 +378,12 @@ export default function ProfileScreen({ navigation: navProp }: any) {
           style={[
             styles.scrollView,
             // RN Web: ให้ตัวนี้เป็น container ที่มี overflow จริงๆ
-            Platform.OS === 'web' && { height: '100%', overflow: 'auto' },
+            Platform.OS === 'web' && {
+              flex: 1,
+              height: '100%',
+              // React Native types ไม่อนุญาต 'auto' -> ใช้ 'scroll' แทน
+              overflow: 'scroll',
+            },
           ]}
           showsVerticalScrollIndicator={false}
           scrollEnabled={true}
