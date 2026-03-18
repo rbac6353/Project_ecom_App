@@ -1,5 +1,5 @@
 // screens/ProfileScreen.tsx
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { StyleSheet, View, ScrollView, Text, TouchableOpacity, Image, ActivityIndicator, FlatList, Platform } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -80,6 +80,35 @@ export default function ProfileScreen({ navigation: navProp }: any) {
     fetchWallet: 0,
   });
   const FETCH_COOLDOWN = 5000; // 5 วินาที
+
+  // Web: บางครั้ง RNW ใส่ overflow: hidden ไว้ที่ parent ทำให้ mouse wheel ไม่ไปถึง ScrollView
+  useEffect(() => {
+    if (Platform.OS !== 'web') return;
+
+    const style = document.createElement('style');
+    style.setAttribute('data-rnw-scroll-fix', '1');
+    style.innerHTML = `
+      html, body, #root { height: 100%; overflow: auto !important; }
+      /* ให้ wrapper ของ RNW (เช่น SafeAreaView) ไม่บล็อกการเลื่อน */
+      [data-rnw-class] { overflow: visible !important; }
+    `;
+
+    document.head.appendChild(style);
+
+    // เผื่อบางกรณี overflow ถูก set แบบ inline -> ปรับด้วย JS เฉพาะอันที่ overflow:hidden
+    const els = Array.from(document.querySelectorAll<HTMLElement>('[data-rnw-class]'));
+    for (const el of els) {
+      const cs = window.getComputedStyle(el);
+      if (cs.overflow === 'hidden' || cs.overflowY === 'hidden') {
+        el.style.overflow = 'visible';
+        el.style.overflowY = 'visible';
+      }
+    }
+
+    return () => {
+      style.remove();
+    };
+  }, []);
 
   // ฟังก์ชันตรวจสอบว่า user มี store หรือไม่
   const checkUserStore = useCallback(async () => {
