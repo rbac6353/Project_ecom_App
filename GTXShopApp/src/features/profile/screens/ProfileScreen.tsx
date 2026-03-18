@@ -378,12 +378,17 @@ export default function ProfileScreen({ navigation: navProp }: any) {
           style={[
             styles.scrollView,
             // RN Web: ให้ตัวนี้เป็น container ที่มี overflow จริงๆ
-            Platform.OS === 'web' && {
-              flex: 1,
-              height: '100%',
-              // React Native types ไม่อนุญาต 'auto' -> ใช้ 'scroll' แทน
-              overflow: 'scroll',
-            },
+            Platform.OS === 'web' &&
+              ({
+                flex: 1,
+                height: '100vh' as any,
+                // RN types จำกัดค่า overflow บางตัว -> cast เป็น any
+                overflow: 'auto' as any,
+                // ช่วยให้ scroll บน desktop/wheel ทำงานลื่นขึ้น (RN Web)
+                WebkitOverflowScrolling: 'touch' as any,
+                touchAction: 'pan-y' as any,
+                overflowX: 'hidden',
+              } as any),
           ]}
           showsVerticalScrollIndicator={false}
           scrollEnabled={true}
