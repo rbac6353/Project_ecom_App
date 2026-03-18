@@ -1,6 +1,6 @@
 // screens/ProfileScreen.tsx
 import React, { useState, useCallback, useRef } from 'react';
-import { StyleSheet, View, ScrollView, Text, TouchableOpacity, Image, ActivityIndicator, FlatList } from 'react-native';
+import { StyleSheet, View, ScrollView, Text, TouchableOpacity, Image, ActivityIndicator, FlatList, Platform } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '@app/providers/AuthContext';
@@ -373,10 +373,20 @@ export default function ProfileScreen({ navigation: navProp }: any) {
         edges={['top']}
       >
         <ScrollView
-          style={[styles.scrollView]}
+          style={[
+            styles.scrollView,
+            // RN Web: ให้ตัวนี้เป็น container ที่มี overflow จริงๆ
+            Platform.OS === 'web' && { height: '100%', overflow: 'auto' },
+          ]}
           showsVerticalScrollIndicator={false}
           scrollEnabled={true}
-          contentContainerStyle={{ paddingBottom: 90, flexGrow: 1 }}
+          nestedScrollEnabled={true}
+          contentContainerStyle={{
+            paddingBottom: 90,
+            flexGrow: 1,
+            // เผื่อกรณี parent height ไม่ถูก constrain บน web
+            minHeight: Platform.OS === 'web' ? '100%' : undefined,
+          }}
         >
           <ProfileHeader navigation={navProp} />
 
